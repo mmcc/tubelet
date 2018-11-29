@@ -45,6 +45,11 @@ const auth = (req, res, next) => {
 };
 
 const createStreamKey = async () => {
+  if (!process.env.MUX_TOKEN_ID || !process.env.MUX_TOKEN_SECRET) {
+    console.error("It looks like you haven't set up your Mux token in the .env file yet!");
+    return;
+  }
+
   let { data: { data: stream }} = await Video.liveStreams.create({
     playback_policy: 'public',
     reconnect_window: 10,
