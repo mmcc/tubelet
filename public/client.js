@@ -111,6 +111,9 @@
             ])
           ))),
         ]),
+        m('footer', [
+          m('.glitchButton', { style: 'position:fixed;top:20px;right:20px;' }),
+        ]),
       ];
     }
   };
