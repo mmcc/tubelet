@@ -44,7 +44,6 @@
 
     return {
       view: (vnode) => {
-        console.log(vnode);
         return m('img.archivePreview', {
           onmouseover: onHover,
           onmouseout: offHover,
@@ -56,12 +55,15 @@
 
   const App = {
     oninit: async () => {
-      await Promise.all([
-        App.getStream(),
-        App.getRecentStreams()
-      ]);
+      await App.getStream();
+
+      App.getRecentStreams()
 
       socket.on('stream_update', (stream) => {
+        if (stream.status === 'idle') {
+          App.getRecentStreams();
+        }
+
         App.stream = stream;
         m.redraw();
       });
@@ -92,16 +94,16 @@
     view: () => {
       return [
         m('header', [
-          m('h1', 'Tubelet'),
+          m('h1', '📺 Tubelet'),
         ]),
         m('main', [
-          m('h1', {class: 'title'}, `Status: ${App.stream.status || 'loading...'}`),
+          m('h2', {class: 'title'}, `Status: ${App.stream.status || 'loading...'}`),
 
           App.stream.status === 'active'
             ? m(Video, { playbackId: App.stream.playbackId })
-            : m('.placeholder', 'nah'),
+            : m('.placeholder', 'No active stream right now 😢'),
 
-          m('h2', 'Recent Streams'),
+          m('h3', 'Recent Streams'),
           m('ul.recentStreams', App.recentStreams.map((asset) => (
             m('li', [
               m('span.time', (new Date(asset['created_at'] * 1000)).toDateString()),
