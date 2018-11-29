@@ -96,7 +96,7 @@ app.get('/stream', async (req, res) => {
 });
 
 app.get('/recent', async (req, res) => {
-  const recentAssetIds = STREAM['recent_asset_ids'];
+  const recentAssetIds = STREAM['recent_asset_ids'] || [];
 
   const assets = await Promise.all(
     recentAssetIds
